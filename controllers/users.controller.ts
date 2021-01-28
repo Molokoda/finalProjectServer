@@ -12,6 +12,11 @@ class UserController{
         res
             .send( await(this.service.reg( req.body ) ) )
     }
+
+    answer = async(req, res, next) => {
+        res
+            .send( await(this.service.answer() ) )
+    }
 }
 
 module.exports = new UserController

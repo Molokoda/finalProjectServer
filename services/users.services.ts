@@ -26,22 +26,24 @@ const user = new Users();
 
 class DBusersServices{
     login = async(logUser) => {
+       
+        let user;
         let validate = await loginScheme.isValid({ login: logUser.login, password: logUser.password})
         let result = '';
         if(validate){
             let users = await Users.find(function (err) {
                 if (err) return console.error(err);
             })
-            let user = users.find( (user) => user.login === logUser.login);
+            user = users.find( (user) => user.login === logUser.login);
             result = await bcrypt.compare(logUser.password, user.password);
         }
         
         if(result){
             const id = user.id;
             const token = jwt.sign( {id}, 'secret');
-            return ['success', token]
+            return  JSON.stringify([user, token]);
         }else{
-           return 'login or password incorrect';
+            return JSON.stringify('login or password wrong');
         }
 
         
@@ -58,6 +60,7 @@ class DBusersServices{
             let sameUser = users.find( (element) => element.login === newUser.login);
             if(sameUser){
                 answer = 'User with such login has already exist'
+                console.log('duplicate');
             }
             else{
                 for(let key in newUser){
@@ -67,8 +70,9 @@ class DBusersServices{
                 await bcrypt.hash(user.password, saltRounds).then( async (hash) => {
                     user.password = hash
                 }) 
+                
                 await user.save();
-                answer = user;
+                answer = 'Success. Now you can Log In :)';
             }
             
         }
@@ -76,7 +80,11 @@ class DBusersServices{
             answer = 'incorrect data'
         }
             
-        return answer
+        return JSON.stringify(answer)
+    }
+
+    answer = () => {
+        return 'answer'
     }
 }
 
