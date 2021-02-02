@@ -3,19 +3,11 @@ const router = expres.Router();
 const controller = require('../controllers/users.controller.ts');
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
+const postsController = require('../controllers/posts.controller.ts');
+const multeMiddelware = require('../middlewares/multer.middlewares.ts');
 
 
-const testmongoose = require('mongoose');
-const { Schema } = testmongoose;
-
-const testusersSchema = new Schema({
-    login: String,
-    password: String,
-    name: String
-})
-
-const User = testmongoose.model('googleUsers', testusersSchema);
-let googleUser = new User();
+let googleUser ;
 
 passport.use(new GoogleStrategy({
     clientID: '746699658756-r2kat6oj0pc2d4fah094jpnftcmp1psu.apps.googleusercontent.com',
@@ -54,5 +46,6 @@ router
         res.send( 'success')} ) 
     .post('/login', passport.initialize(), controller.login)
     .post('/reg', controller.reg)
-
+    .post('/posts/add', multeMiddelware, postsController.add)
+    .get('/posts/user', postsController.getUsersPosts)
 module.exports = router

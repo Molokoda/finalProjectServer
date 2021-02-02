@@ -1,28 +1,11 @@
 const loginScheme = require('../schemes/loginSchema.ts') 
 const regScheme = require('../schemes/regScheme.ts') 
-const mongoose = require('mongoose');
-const { Schema } = mongoose;
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
+const models = require('../database/database.ts')
 
-mongoose.connect('mongodb://localhost/test', {useNewUrlParser: true, useUnifiedTopology: true});
-
-const db = mongoose.connection;
-db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', function() {
-  console.log('we are connected!')
-});
-
-
-const usersSchema = new Schema({
-    login: String,
-    password: String,
-    name: String
-})
-
-const Users = mongoose.model('Users', usersSchema);
-const user = new Users();
+const user = new models.Users();
 
 class DBusersServices{
     login = async(logUser) => {
@@ -31,7 +14,7 @@ class DBusersServices{
         let validate = await loginScheme.isValid({ login: logUser.login, password: logUser.password})
         let result = '';
         if(validate){
-            let users = await Users.find(function (err) {
+            let users = await models.Users.find(function (err) {
                 if (err) return console.error(err);
             })
             user = users.find( (user) => user.login === logUser.login);
@@ -53,14 +36,13 @@ class DBusersServices{
         let validate = await regScheme.isValid( {login: newUser.login, password: newUser.password, name: newUser.name} ) 
         let answer ;
         if(validate){
-            let users = await Users.find(function (err) {
+            let users = await models.Users.find(function (err) {
                 if (err) return console.error(err);
             })
 
             let sameUser = users.find( (element) => element.login === newUser.login);
             if(sameUser){
                 answer = 'User with such login has already exist'
-                console.log('duplicate');
             }
             else{
                 for(let key in newUser){
