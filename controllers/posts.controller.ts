@@ -16,6 +16,11 @@ class PostsController {
         res
             .send( await(this.postsService.getUsersPosts(req.query.login)))
     }
+
+    getFriendsPosts = async(req, res, next) => {
+        res
+            .send( await(this.postsService.getFriendsPosts(req.body) ) )
+    }
 }
 
 module.exports = new PostsController;

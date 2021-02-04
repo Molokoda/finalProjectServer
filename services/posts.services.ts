@@ -40,6 +40,25 @@ class PostsServices{
     delete = () => {
 
     }
+
+    getFriendsPosts = async(friends) => {
+        let postsFromDB = await postModels.Posts.find( function(err){
+            if(err) return console.error(err);
+        });
+
+        let answer = postsFromDB.filter( (post) => {
+            let isFriendPost = friends.find( (friend) => friend === post.author);
+            if( isFriendPost ){
+                return true
+            }
+            else{
+                return false
+            }
+        })
+
+        return JSON.stringify(answer)
+        
+    }
 }
 
 module.exports = new PostsServices
