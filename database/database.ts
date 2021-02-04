@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-
+mongoose.set('useFindAndModify', false);
 const { Schema } = mongoose;
 
 mongoose.connect('mongodb://localhost/test', {useNewUrlParser: true, useUnifiedTopology: true});
@@ -13,7 +13,8 @@ db.once('open', function() {
 const usersSchema = new Schema({
     login: String,
     password: String,
-    name: String
+    name: String,
+    friends: Array
 })
 
 const postSchema = new Schema({

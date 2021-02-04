@@ -68,6 +68,43 @@ class DBusersServices{
     answer = () => {
         return 'answer'
     }
+
+    getAll = async() => {
+        let users = await models.Users.find(function (err) {
+            if (err) return console.error(err);
+        })
+
+        return JSON.stringify(users);
+    }
+
+    changeFriends = async(data) => {
+        let user = await models.Users.findOne( {login: data.login}  ).exec();
+        if(user.friends){
+            let isFriend = user.friends.find( (friend) => friend === data.friend);
+            if(isFriend){
+                let isDeleteFriendFind = false;
+                for(let i = 0; i < user.friends.length - 1; i++){
+                    if( user.friends[i] === data.friend ||  isDeleteFriendFind){
+                        user.friends[i] = user.friends[ i + 1 ];
+                        isDeleteFriendFind = true;
+                    }
+                }
+                user.friends.length = user.friends.length - 1;
+                await models.Users.findOneAndUpdate( {login: data.login}, { friends: user.friends}).exec();
+            }
+            else{
+                
+                user.friends.push( data.friend );
+                await models.Users.findOneAndUpdate( {login: data.login}, { friends: user.friends}).exec();
+            }
+        }
+        else{
+            user.friends = [data.friend];
+            await models.Users.findOneAndUpdate( {login: data.login}, { friends: user.friends}).exec();
+        }
+
+        return JSON.stringify('success');
+    }
 }
 
 module.exports = new DBusersServices

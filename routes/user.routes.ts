@@ -44,8 +44,11 @@ router
     .get('/reg', (req, res) => {
         //console.log(req) 
         res.send( 'success')} ) 
+    .get('/posts/user', postsController.getUsersPosts)
+    .get('/allusers', controller.getAll)
     .post('/login', passport.initialize(), controller.login)
     .post('/reg', controller.reg)
     .post('/posts/add', multeMiddelware, postsController.add)
-    .get('/posts/user', postsController.getUsersPosts)
+    .put('/friends', controller.changeFrieads)
+    
 module.exports = router

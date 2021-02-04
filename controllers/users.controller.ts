@@ -17,6 +17,17 @@ class UserController{
         res
             .send( await(this.service.answer() ) )
     }
+
+    getAll = async(req, res, next) => {
+        res
+            .send( await(this.service.getAll() ) )
+    }
+
+    changeFrieads = async(req, res, next) => {
+        console.log(req.body);
+        res
+            .send( await( this.service.changeFriends( req.body ) ) )
+    }
 }
 
 
