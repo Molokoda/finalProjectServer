@@ -24,9 +24,13 @@ class UserController{
     }
 
     changeFrieads = async(req, res, next) => {
-        console.log(req.body);
         res
             .send( await( this.service.changeFriends( req.body ) ) )
+    }
+
+    addChat = async(req, res, next) => {
+        res
+            .send( await(this.service.addChat( req.body ) ) )
     }
 }
 

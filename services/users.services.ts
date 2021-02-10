@@ -22,9 +22,15 @@ class DBusersServices{
         }
         
         if(result){
+            let answer = {login: '', friends: [], chats: [], avatar: ''};
+            for( let field in answer ){
+                if( user[field] ){
+                    answer[field] = user[field];
+                }
+            }
             const id = user.id;
             const token = jwt.sign( {id}, 'secret');
-            return  JSON.stringify([user, token]);
+            return  JSON.stringify([answer, token]);
         }else{
             return JSON.stringify('login or password wrong');
         }
@@ -34,7 +40,7 @@ class DBusersServices{
 
     reg = async(newUser) => {
         let validate = await regScheme.isValid( {login: newUser.login, password: newUser.password, name: newUser.name} ) 
-        let answer ;
+        let answer = '';
         if(validate){
             let users = await models.Users.find(function (err) {
                 if (err) return console.error(err);
@@ -52,7 +58,7 @@ class DBusersServices{
                 await bcrypt.hash(user.password, saltRounds).then( async (hash) => {
                     user.password = hash
                 }) 
-                
+                user.isNew = true; 
                 await user.save();
                 answer = 'Success. Now you can Log In :)';
             }
@@ -103,6 +109,18 @@ class DBusersServices{
             await models.Users.findOneAndUpdate( {login: data.login}, { friends: user.friends}).exec();
         }
 
+        return JSON.stringify('success');
+    }
+
+    addChat = async(data) => {
+        console.log('We here');
+        console.log(data);
+        let userChange;
+        data.users.forEach( async(user) => {
+            userChange = await models.Users.findOne( {login: user} ).exec();
+            userChange.chats.push( data.chat );
+            await models.Users.findOneAndUpdate( {login: user}, {chats: userChange.chats} ).exec();
+        })
         return JSON.stringify('success');
     }
 }

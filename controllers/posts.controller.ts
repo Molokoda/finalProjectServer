@@ -1,5 +1,6 @@
 const postsServices = require('../services/posts.services.ts');
 
+
 class PostsController {
     postsService = postsServices;
 
@@ -20,6 +21,16 @@ class PostsController {
     getFriendsPosts = async(req, res, next) => {
         res
             .send( await(this.postsService.getFriendsPosts(req.body) ) )
+    }
+
+    deletePost = async(req, res, next) => {
+        res
+            .send( await(this.postsService.deletePost(req.body) ) )
+    }
+
+    dislike = async(req, res, next) => {
+        res
+            .send( await( this.postsService.dislike( req.body ) ) )
     }
 }
 

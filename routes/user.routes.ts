@@ -4,6 +4,7 @@ const controller = require('../controllers/users.controller.ts');
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 const postsController = require('../controllers/posts.controller.ts');
+const chatsController = require('../controllers/chats.controller.ts');
 const multeMiddelware = require('../middlewares/multer.middlewares.ts');
 
 
@@ -45,10 +46,16 @@ router
         res.send( 'success')} ) 
     .get('/posts/user', postsController.getUsersPosts)
     .get('/allusers', controller.getAll)
+    .get('/chats/getchat', chatsController.getMessages)
     .post('/login', passport.initialize(), controller.login)
     .post('/reg', controller.reg)
     .post('/posts/add', multeMiddelware, postsController.add)
     .post('/posts/friendsposts', postsController.getFriendsPosts)
+    .post('/chats/create', chatsController.create)
     .put('/friends', controller.changeFrieads)
+    .put('/addchat', controller.addChat)
+    .put('/posts/dislike', postsController.dislike)
+    .put('/chats/addmessage', chatsController.addMessage)
+    .delete('/posts/delete', postsController.deletePost)
     
 module.exports = router

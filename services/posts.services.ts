@@ -1,14 +1,16 @@
+// import { models } from "mongoose";
+
 const postModels = require('../database/database.ts')
-
+const fs = require('fs');
 const post = new postModels.Posts;
-
+const pathFinder = require('path');
 class PostsServices{
     add = async(postData) => {
         let postsFromDB = await postModels.Posts.find(function (err) {
             if (err) return console.error(err);
         })
 
-        let samePost = postsFromDB.find ( (post) =>  post._id === postData.id)
+        let samePost = postsFromDB.find( (post) =>  post._id === postData.id)
 
         if(samePost){
             return JSON.stringify('Post already exist');
@@ -18,7 +20,10 @@ class PostsServices{
             post.author = postData.data.author;
             post.date = postData.data.date;
             post.path = postData.file_path;
-            post.save();
+            post.likes = postData.data.likes;
+            post.comments = postData.data.comments
+            post.isNew = true; 
+            await post.save();
             return JSON.stringify('Success')
         }
     }
@@ -58,6 +63,21 @@ class PostsServices{
 
         return JSON.stringify(answer)
         
+    }
+
+    deletePost = async(post) => {
+        let pathToImg = pathFinder.resolve('public/images');
+        await fs.unlink(`${pathToImg}\\${post.path.slice(41)}`,
+            (err) => {
+                if (err) throw err;
+            });
+        await postModels.Posts.findOneAndDelete( {_id: post.id } ).exec();
+        return JSON.stringify('success');
+    }
+
+    dislike = async(post) => {
+        await postModels.Posts.findOneAndUpdate( {_id: post.id}, {likes: post.likes} ).exec();
+        return 'success'
     }
 }
 
