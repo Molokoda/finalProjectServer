@@ -79,6 +79,13 @@ class PostsServices{
         await postModels.Posts.findOneAndUpdate( {_id: post.id}, {likes: post.likes} ).exec();
         return 'success'
     }
+
+    addComment = async( data ) => {
+        let post = await postModels.Posts.findOne( {_id: data.id} ).exec();
+        post.comments.push(data.comment);
+        await postModels.Posts.findOneAndUpdate( { _id: data.id }, { comments: post.comments } ).exec();
+        return 'success'
+    }
 }
 
 module.exports = new PostsServices

@@ -32,6 +32,11 @@ class PostsController {
         res
             .send( await( this.postsService.dislike( req.body ) ) )
     }
+
+    addComment = async(req, res, next) => {
+        res 
+            .send( await( this.postsService.addComment( req.body ) ) )
+    }
 }
 
 module.exports = new PostsController;

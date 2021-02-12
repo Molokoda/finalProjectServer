@@ -55,6 +55,7 @@ router
     .put('/friends', controller.changeFrieads)
     .put('/addchat', controller.addChat)
     .put('/posts/dislike', postsController.dislike)
+    .put('/posts/addcomment', postsController.addComment)
     .put('/chats/addmessage', chatsController.addMessage)
     .delete('/posts/delete', postsController.deletePost)
     
