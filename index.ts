@@ -10,7 +10,10 @@ const io = require('socket.io')(http);
 
 io.on('connection', socket => {
     socket.on('private', (data) => {
-        io.emit( `${data._id}::${data.to}`, { message: data.message} );
+        data.to.forEach( user => {
+            io.emit( `${data._id}::${user}`, { message: data.message} );
+        });
+        
     } );
 })
 

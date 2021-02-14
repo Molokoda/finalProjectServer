@@ -7,6 +7,8 @@ const models = require('../database/database.ts')
 
 const user = new models.Users();
 
+
+
 class DBusersServices{
     login = async(logUser) => {
        
@@ -80,7 +82,8 @@ class DBusersServices{
             if (err) return console.error(err);
         })
 
-        return JSON.stringify(users);
+        let arrayOfUsersName = users.map( (user) => { return user.login} )
+        return JSON.stringify(arrayOfUsersName);
     }
 
     changeFriends = async(data) => {
@@ -113,8 +116,6 @@ class DBusersServices{
     }
 
     addChat = async(data) => {
-        console.log('We here');
-        console.log(data);
         let userChange;
         data.users.forEach( async(user) => {
             userChange = await models.Users.findOne( {login: user} ).exec();
