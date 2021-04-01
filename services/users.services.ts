@@ -30,8 +30,8 @@ class DBusersServices{
                     answer[field] = user[field];
                 }
             }
-            const id = user.id;
-            const token = jwt.sign( {id}, 'secret');
+            const id = user.login;
+            const token = jwt.sign( { id }, 'secret');
             return  JSON.stringify([answer, token]);
         }else{
             return JSON.stringify('login or password wrong');

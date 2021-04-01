@@ -6,30 +6,15 @@ const post = new postModels.Posts;
 const pathFinder = require('path');
 class PostsServices{
     add = async(postData) => {
-        let postsFromDB = await postModels.Posts.find(function (err) {
-            if (err) return console.error(err);
-        })
-
-        let samePost = postsFromDB.find( (post) =>  post._id === postData.id)
-
-        if(samePost){
-            return JSON.stringify('Post already exist');
-        }
-        else{
-            post._id.id = postData.data.id;
-            post.author = postData.data.author;
-            post.date = postData.data.date;
-            post.path = postData.file_path;
-            post.likes = postData.data.likes;
-            post.comments = postData.data.comments
-            post.isNew = true; 
-            await post.save();
-            return JSON.stringify('Success')
-        }
-    }
-
-    edit = (postData) => {
-
+        post._id.id = postData.data.id;
+        post.author = postData.data.author;
+        post.date = postData.data.date;
+        post.path = postData.file_path;
+        post.likes = postData.data.likes;
+        post.comments = postData.data.comments
+        post.isNew = true; 
+        await post.save();
+        return 'Success'
     }
 
     getUsersPosts = async(user) => {
@@ -42,9 +27,6 @@ class PostsServices{
         return JSON.stringify(answer);
     }
 
-    delete = () => {
-
-    }
 
     getFriendsPosts = async(friends) => {
         let postsFromDB = await postModels.Posts.find( function(err){
@@ -67,7 +49,8 @@ class PostsServices{
 
     deletePost = async(post) => {
         let pathToImg = pathFinder.resolve('public/images');
-        await fs.unlink(`${pathToImg}\\${post.path.slice(41)}`,
+        let temp = post.path.split('/');
+        await fs.unlink(`${pathToImg}\\${temp[temp.length - 1]}`,
             (err) => {
                 if (err) throw err;
             });
